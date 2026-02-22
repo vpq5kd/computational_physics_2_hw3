@@ -95,6 +95,8 @@ def wolff_cluster_logic(N, T, spins):
                         f_new.add(neighbor)
                         cluster.add(neighbor)
         f_old = f_new
+    
+    return cluster
 
 def wolff_cluster(N, T, spins, melting_iterations, measuring_iterations):
     
@@ -106,7 +108,7 @@ def wolff_cluster(N, T, spins, melting_iterations, measuring_iterations):
         wolff_cluster_logic(N, T, spins)    
     
     for i in range(measuring_iterations):
-        wolff_cluster_logic(N, T, spins)
+        cluster = wolff_cluster_logic(N, T, spins)
     
         for spin in cluster:
             x = spin[1]
@@ -142,7 +144,7 @@ def main():
     N = 30
     melting_iterations = 500
     measuring_iterations = 1000
-    temperature_array, wolff_energy_array, metropolis_energy_array = run_sim(N, iterations)
+    temperature_array, wolff_energy_array, metropolis_energy_array = run_sim(N, melting_iterations, measuring_iterations)
     plt.figure()
     plt.plot(temperature_array, metropolis_energy_array/N**2,label='metropolis')
     plt.plot(temperature_array, wolff_energy_array/N**2,label='wolff')
