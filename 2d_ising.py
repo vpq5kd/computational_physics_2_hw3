@@ -94,8 +94,12 @@ def wolff_cluster_logic(N, T, spins):
                         f_new.add(neighbor)
                         cluster.add(neighbor)
         f_old = f_new
-    
-    return cluster
+        
+    for spin in cluster:
+        x = spin[1]
+        y = spin[0]
+        spins[y,x]*=-1
+
 
 def wolff_cluster(N, T, spins, melting_iterations, measuring_iterations):
     
@@ -105,13 +109,7 @@ def wolff_cluster(N, T, spins, melting_iterations, measuring_iterations):
         wolff_cluster_logic(N, T, spins)    
     
     for i in range(measuring_iterations):
-        cluster = wolff_cluster_logic(N, T, spins)
-    
-        for spin in cluster:
-            x = spin[1]
-            y = spin[0]
-            spins[y,x]*=-1
-        
+        wolff_cluster_logic(N, T, spins)
         temp_energy_array.append(hamiltonian(spins))
 
     return np.mean(temp_energy_array)
