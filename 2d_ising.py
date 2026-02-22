@@ -18,7 +18,7 @@ def hamiltonian(spins, J=1):
             
     return energy
 
-def metroplois_logic(N, T, spins):
+def metropolis_logic(N, T, spins):
 
     random_site_x = rng.integers(N)
     random_site_y = rng.integers(N)
@@ -119,7 +119,7 @@ def wolff_cluster(N, T, spins, melting_iterations, measuring_iterations):
 
     return np.mean(temp_energy_array)
 
-def run_sim(N, measuring_iterations, melting_iterations):
+def run_sim(N, wolff_melting_iterations, wolff_measuring_iterations, metropolis_melting_iterations, metropolis_measuring_iterations):
     
     temperature_array = np.linspace(0.1, 5.1, 100)[::-1]
     metropolis_energy_array = []
@@ -129,8 +129,8 @@ def run_sim(N, measuring_iterations, melting_iterations):
         spins_metropolis = np.random.choice([-1,1], size=(N,N))
         spins_wolff = np.random.choice([-1,1], size=(N,N))
 
-        temperature_wolff_mean_energy = wolff_cluster(N, T, spins_wolff, melting_iterations, measuring_iterations)
-        temperature_metropolis_mean_energy = metropolis(N, T, spins_metropolis, melting_iterations, measuring_iterations)
+        temperature_wolff_mean_energy = wolff_cluster(N, T, spins_wolff, wolff_melting_iterations, wolff_measuring_iterations)
+        temperature_metropolis_mean_energy = metropolis(N, T, spins_metropolis, metropolis_melting_iterations, metropolis_measuring_iterations)
         
         wolff_energy_array.append(temperature_wolff_mean_energy)
         metropolis_energy_array.append(temperature_metropolis_mean_energy)
@@ -141,10 +141,15 @@ def run_sim(N, measuring_iterations, melting_iterations):
 
 
 def main():
+    
     N = 30
-    melting_iterations = 500
-    measuring_iterations = 1000
-    temperature_array, wolff_energy_array, metropolis_energy_array = run_sim(N, melting_iterations, measuring_iterations)
+    wolff_melting_iterations = 500
+    wolff_measuring_iterations = 1000
+    metropolis_melting_iterations = 5000
+    metropolis_measuring_iterations = 10000
+
+    temperature_array, wolff_energy_array, metropolis_energy_array = run_sim(N, wolff_melting_iterations, wolff_measuring_iterations, metropolis_melting_iterations, metropolis_measuring_iterations)
+    
     plt.figure()
     plt.plot(temperature_array, metropolis_energy_array/N**2,label='metropolis')
     plt.plot(temperature_array, wolff_energy_array/N**2,label='wolff')
