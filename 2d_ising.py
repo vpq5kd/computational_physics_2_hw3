@@ -1,5 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import os
+from concurrent.futures import ProcessPoolExecutor
+from tqdm import tqdm
+
 rng = np.random.default_rng()
 
 def hamiltonian(spins, J=1):
@@ -114,26 +118,29 @@ def wolff_cluster(N, T, spins, melting_iterations, measuring_iterations):
 
     return np.mean(temp_energy_array)
 
+def temperature_logic(args):
+    
+    N, T, melting_iterations, measuring_iterations = args
+
+    spins_metropolis = np.random.choice([-1,1], size=(N,N))
+    spins_wolff = np.random.choice([-1,1], size=(N,N))
+
+    wolff_energy = wolff_cluster(N, T, spins_wolff, melting_iterations, measuring_iterations)
+    metropolis_energy = metropolis(N, T, spins_metropolis, melting_iterations, measuring_iterations)
+
+    return T, wolff_energy, metropolis_energy
+
 def run_sim(N, melting_iterations, measuring_iterations):
     
     temperature_array = np.linspace(0.1, 5.1, 100)[::-1]
-    metropolis_energy_array = []
-    wolff_energy_array = []
-
-    for T in temperature_array:
-        spins_metropolis = np.random.choice([-1,1], size=(N,N))
-        spins_wolff = np.random.choice([-1,1], size=(N,N))
-
-        temperature_wolff_mean_energy = wolff_cluster(N, T, spins_wolff, melting_iterations, measuring_iterations)
-        temperature_metropolis_mean_energy = metropolis(N, T, spins_metropolis, melting_iterations, measuring_iterations)
-        
-        wolff_energy_array.append(temperature_wolff_mean_energy)
-        metropolis_energy_array.append(temperature_metropolis_mean_energy)
-       
-        print(T)
     
-    return np.array(temperature_array), np.array(wolff_energy_array), np.array(metropolis_energy_array)
+    args = [(N, T, melting_iterations, measuring_iterations) for T in temperature_array]
+    
+    with ProcessPoolExecutor(max_workers=os.cpu_count()) as executor:
+        results = list(tqdm(executor.map(temperature_logic, args), total=len(args)))
 
+    T_arr, wolff_e_arr, metro_e_arr = zip(*results)
+    return np.array(T_arr), np.array(wolff_e_arr), np.array(metro_e_arr)
 
 def main():
     
@@ -149,4 +156,5 @@ def main():
     plt.legend()
     plt.show()
 
-main()
+if __name__ == "__main__":
+    main()
