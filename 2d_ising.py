@@ -29,7 +29,7 @@ def metropolis(N):
         temp_energy_array = []
         initial_energy = hamiltonian(spins)
         temp_energy_array.append(initial_energy)
-        for i in range(100000):
+        for i in range(1000000):
             previous_energy = temp_energy_array[-1]
 
             random_site_x = rng.integers(N)
@@ -55,7 +55,7 @@ def metropolis(N):
                 continue
 
             temp_energy_array.append(previous_energy)
-
+        print(T)
         energy_array.append(np.mean(temp_energy_array))    
 
     return np.array(temp_array), np.array(energy_array)
