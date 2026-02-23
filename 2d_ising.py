@@ -1,10 +1,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import argparse
 from concurrent.futures import ProcessPoolExecutor
 from tqdm import tqdm
 
 rng = np.random.default_rng()
+
+parser = argparse.ArgumentParser('2D ising simulation')
+parser.add_argument('--melting_iterations', type=int)
+parser.add_argument('--measuring_iterations', type=int)
+args = parser.parse_args()
 
 def hamiltonian(spins, J=1):
     N = spins.shape[0]
@@ -148,8 +154,8 @@ def run_sim(N, melting_iterations, measuring_iterations):
 def main():
     
     N = 30
-    melting_iterations = 500
-    measuring_iterations = 1000
+    melting_iterations = args.melting_iterations
+    measuring_iterations = args.measuring_iterations
 
     temperature_array, wolff_energy_array, wolff_energy_array_squared, metropolis_energy_array, metropolis_energy_array_squared  = run_sim(N, melting_iterations, measuring_iterations)
     
