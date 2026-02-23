@@ -156,16 +156,16 @@ def main():
     average_wolff_energy_array = wolff_energy_array/N**2
     average_wolff_energy_array_squared = wolff_energy_array_squared/N**2
     average_metro_energy_array = metropolis_energy_array/N**2
-    average_metro_energy_array = metropolis_energy_array_squared/N**2
+    average_metro_energy_array_squared = metropolis_energy_array_squared/N**2
 
     wolff_heat_cap_array = (1/temperature_array)*((average_wolff_energy_array_squared)-(average_wolff_energy_array)**2)
     metro_heat_cap_array = (1/temperature_array)*((average_metro_energy_array_squared)-(average_metro_energy_array)**2)
 
     fig, ax = plt.subplots(1,2)
-    ax[0].plot(temperature_array, metropolis_energy_array/N**2,label='metropolis')
-    ax[0].plot(temperature_array, wolff_energy_array/N**2,label='wolff')
-    ax[1].plot(temperature_array, metro_heat_cap_array)
-    ax[1].plot(temperature_array, wolff_heat_cap_array)
+    ax[0].plot(temperature_array, average_metro_energy_array,label='metropolis')
+    ax[0].plot(temperature_array, average_wolff_energy_array,label='wolff')
+    ax[1].plot(temperature_array, metro_heat_cap_array/N**2)
+    ax[1].plot(temperature_array, wolff_heat_cap_array/N**2)
     plt.legend()
     plt.show()
 
