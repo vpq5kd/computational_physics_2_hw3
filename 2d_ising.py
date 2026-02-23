@@ -157,16 +157,29 @@ def main():
     average_wolff_energy_array_squared = wolff_energy_array_squared/N**2
     average_metro_energy_array = metropolis_energy_array/N**2
     average_metro_energy_array_squared = metropolis_energy_array_squared/N**2
+    
+    wolff_heat_cap_array = (1/temperature_array**2) * (wolff_energy_array_squared - wolff_energy_array**2) / N**2
 
-    wolff_heat_cap_array = ((1/temperature_array)**2)*((average_wolff_energy_array_squared)-(average_wolff_energy_array)**2)
-    metro_heat_cap_array = ((1/temperature_array)**2)*((average_metro_energy_array_squared)-(average_metro_energy_array)**2)
-
+    metro_heat_cap_array = (1/temperature_array**2) * (metropolis_energy_array_squared - metropolis_energy_array**2) / N**2
+    
     fig, ax = plt.subplots(1,2)
-    ax[0].plot(temperature_array, average_metro_energy_array,label='metropolis')
-    ax[0].plot(temperature_array, average_wolff_energy_array,label='wolff')
-    ax[1].plot(temperature_array, metro_heat_cap_array/N**2)
-    ax[1].plot(temperature_array, wolff_heat_cap_array/N**2)
-    plt.legend()
+    
+    markersize=3
+    labelpad=15
+    color='green'
+
+    ax[0].plot(temperature_array, average_metro_energy_array,label='metropolis',color='red',marker='o',markersize=markersize,markerfacecolor='none',linewidth=1)
+    ax[0].plot(temperature_array, average_wolff_energy_array,'o',markerfacecolor='none', label='wolff',markersize=markersize, color=color)
+    ax[0].set_xlabel("T")
+    ax[0].set_ylabel(r"$\frac{E}{N}$", rotation = 0, labelpad=labelpad)
+    ax[1].plot(temperature_array, metro_heat_cap_array,color='red',marker='o',markersize=markersize,markerfacecolor='none',linewidth=1)
+    ax[1].plot(temperature_array, wolff_heat_cap_array, 'o', markerfacecolor='none', markersize=markersize, color = color)
+    ax[1].set_xlabel("T")
+    ax[1].set_ylabel(r"$\frac{C}{N}$", rotation = 0, labelpad=labelpad)
+    
+    fig.legend(loc='upper right')
+    fig.tight_layout()
+    plt.savefig("2d_ising_plots.png")
     plt.show()
 
 if __name__ == "__main__":
