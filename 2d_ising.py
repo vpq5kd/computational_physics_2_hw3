@@ -122,8 +122,11 @@ def temperature_logic(args):
     
     N, T, melting_iterations, measuring_iterations = args
 
-    spins_metropolis = np.random.choice([-1,1], size=(N,N))
-    spins_wolff = np.random.choice([-1,1], size=(N,N))
+    #spins_metropolis = np.random.choice([-1,1], size=(N,N))
+    #spins_wolff = np.random.choice([-1,1], size=(N,N))
+
+    spins_metropolis = np.ones((N,N))
+    spins_wolff = np.ones((N,N))
 
     wolff_energy = wolff_cluster(N, T, spins_wolff, melting_iterations, measuring_iterations)
     metropolis_energy = metropolis(N, T, spins_metropolis, melting_iterations, measuring_iterations)
@@ -145,8 +148,8 @@ def run_sim(N, melting_iterations, measuring_iterations):
 def main():
     
     N = 30
-    melting_iterations = 50
-    measuring_iterations = 100
+    melting_iterations = 500
+    measuring_iterations = 1000
 
     temperature_array, wolff_energy_array, metropolis_energy_array = run_sim(N, melting_iterations, measuring_iterations)
     
